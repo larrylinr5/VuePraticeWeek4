@@ -117,10 +117,7 @@ app.component('product-modal', {
     },
     //
     mounted() {
-        productModal = new bootstrap.Modal(document.getElementById('productModal'), {
-            keyboard: false,
-            backdrop: 'static'
-        });
+        productModal = new bootstrap.Modal(this.$refs.productModal);
     },
     //
     methods: {
@@ -190,10 +187,7 @@ app.component('del-product-modal', {
         }
     },
     mounted() {
-        delProductModal = new bootstrap.Modal(document.getElementById('delProductModal'), {
-            keyboard: false,
-            backdrop: 'static',
-        });
+        delProductModal = new bootstrap.Modal(this.$refs.delProductModal);
     },
     methods: {
         //刪除選取到的產品
