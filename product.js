@@ -9,16 +9,25 @@ let delProductModal = ''
 //#endregion
 
 const app = createApp({
+    //區域元件
+    components: {
+        //分頁元件
+        pagination: componentsObj.pagination,
+    },
     data() {
         return {
             url: "https://vue3-course-api.hexschool.io/v2",
             path: "larrylinr5",
 
+            /** 產品 */
             products: [],
+            /** 產品暫存物件 */
             tempProduct: {
                 imagesUrl: []
             },
+            //是否為新增
             isNew: false,
+            //分頁物件
             pagination: {},
         };
     },
@@ -89,17 +98,6 @@ const app = createApp({
         //檢核是否為管理者身分
         this.checkAdmin()
     }
-});
-
-// 分頁元件
-app.component('pagination', {
-    template: '#pagination',
-    props: ['pages'],
-    methods: {
-        emitPages(item) {
-            this.$emit('emit-pages', item);
-        },
-    },
 });
 
 app.component('product-modal', {

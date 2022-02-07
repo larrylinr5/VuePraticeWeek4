@@ -1,5 +1,5 @@
 export default {
-    pagination: {
+    aaa: {
         props: ['pages'],
         methods: {
             emitPages(item) {
@@ -49,4 +49,5 @@ export default {
         </nav>
         `
     },
+
 }
