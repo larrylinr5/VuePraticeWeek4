@@ -83,13 +83,13 @@ const app = createApp({
             //編輯
             else if (isNew === 'edit') {
                 this.isNew = false;
-                this.tempProduct = { ...item };
+                this.tempProduct = JSON.parse(JSON.stringify(item));
                 productModal.show();
             }
             //刪除
             else if (isNew === 'delete') {
                 this.isNew = false;
-                this.tempProduct = { ...item };
+                this.tempProduct = JSON.parse(JSON.stringify(item));
                 delProductModal.show()
             }
         },
@@ -100,11 +100,12 @@ const app = createApp({
     }
 });
 
+//元件 => 新增&編輯
 app.component('product-modal', {
     //綁定的HTML樣板
     template: '#productModal',
     //傳入的資料
-    props: ['product', 'isNew'],
+    props: ['product', 'isNew', 'current_page'],
     //元件的資料
     data() {
         return {
@@ -113,15 +114,15 @@ app.component('product-modal', {
             modal: null,
         }
     },
-    //
+    //在這個生命週期設定Modal
     mounted() {
         productModal = new bootstrap.Modal(this.$refs.productModal);
     },
-    //
+    //元件的方法區塊
     methods: {
         //新增產品
         createProduct() {
-            axios['post'](`${this.url}/api/${this.path}/admin/product`, { data: this.tempProduct })
+            axios['post'](`${this.url}/api/${this.path}/admin/product`, { data: this.product })
                 // 成功的結果
                 .then((response) => {
                     //彈出成功新增訊息
@@ -148,7 +149,7 @@ app.component('product-modal', {
                         //關閉Modal
                         productModal.hide();
                         //重新抓畫面的List
-                        this.$emit('update')
+                        this.$emit('update', this.current_page)
                     }
                 })
                 // 失敗的結果
@@ -156,27 +157,21 @@ app.component('product-modal', {
                     alert('編輯產品失敗');
                 })
         },
-        //在暫存產品物件內建立 imagesUrl多圖陣列
+        //在props進來的產品物件內建立 imagesUrl多圖陣列
         createImages() {
-            this.tempProduct.imagesUrl = [];
-            this.tempProduct.imagesUrl.push('');
-        },
-        openModal() {
-            productModal.show();
-        },
-        hideModal() {
-            productModal.hide();
-        },
+            this.product.imagesUrl = [];
+            this.product.imagesUrl.push('');
+        }
     },
-
 })
 
+//元件 => 刪除功能
 app.component('del-product-modal', {
     //綁定的HTML樣板
     template: '#delProductModal',
     //傳入的資料
     props: ['item'],
-    //
+    //元件的資料
     data() {
         return {
             url: "https://vue3-course-api.hexschool.io/v2",
@@ -184,13 +179,15 @@ app.component('del-product-modal', {
             modal: null,
         }
     },
+    //在這個生命週期設定Modal
     mounted() {
         delProductModal = new bootstrap.Modal(this.$refs.delProductModal);
     },
+    //元件的方法區塊
     methods: {
         //刪除選取到的產品
         deleteProduct() {
-            axios.delete(`${this.url}/api/${this.path}/admin/product/${this.tempProduct.id}`)
+            axios.delete(`${this.url}/api/${this.path}/admin/product/${this.item.id}`)
                 // 成功的結果
                 .then((response) => {
                     //若成功刪除
@@ -208,16 +205,8 @@ app.component('del-product-modal', {
                 .catch((err) => {
                     alert('刪除產品失敗');
                 })
-
-        },
-        openModal() {
-            delProductModal.show();
-        },
-        hideModal() {
-            delProductModal.hide();
-        },
+        }
     },
-
 })
 
 app.mount("#app");
